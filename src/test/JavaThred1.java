@@ -10,7 +10,8 @@ public class JavaThred1 {
 		Resource res = new Resource();
 		Thread sc = new Thread(new shenchan(res));
 		Thread xf = new Thread(new xiaofei(res));
-		//sc.setPriority(Thread.MAX_PRIORITY);
+		xf.setPriority(Thread.MAX_PRIORITY);
+		sc.setPriority(Thread.MIN_PRIORITY);
 		sc.start();
 		xf.start();
 	}
@@ -26,7 +27,8 @@ class xiaofei implements Runnable{
 		for(int i = 0 ; i < 50; i ++) {
 			try {
 				this.resource.get();
-				System.out.println("生产了:" + this.resource.comcount + "台电脑");
+				 System.out.println("卖出了:" + this.resource.mcount + "台电脑");
+				 System.out.println("卖出后库存:" + this.resource.list.size() + "台电脑");
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -47,7 +49,9 @@ class shenchan implements Runnable{
 		for(int i = 0 ; i < 50; i ++) {
 			try {
 				this.resource.make();
-				System.out.println("现在有:" + this.resource.list.size() + "台电脑");
+				System.out.println("生产了:" + this.resource.comcount + "台电脑");
+				System.out.println("库存:" + this.resource.list.size() + "台电脑");
+				
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -59,9 +63,11 @@ class shenchan implements Runnable{
 class Resource{
 	public List<Computer> list= new ArrayList<Computer>();
 	public int comcount = 0;
+	public int mcount = 0;
 	public synchronized void make() throws Exception {
 		if(list.size() > 9) {
-			super.wait();
+			System.out.println("仓库满了:"+ list.size() + "***************");
+			this.wait();
 		}else{			
 			list.add(new Computer("名字",2.3));
 			comcount++;
@@ -69,23 +75,23 @@ class Resource{
 			//super.wait();
 		}
 		Thread.sleep(100);
-		super.notifyAll();
+		this.notify();
 	}
 	
 	public synchronized void get() throws Exception {
 		if(list.size() > 0) {
 			list.remove(list.size() - 1);
-			
-			super.wait();
+			System.out.println("电脑卖了：" + ++mcount);
+			//super.wait();
 		}else {
 			
 			System.out.println("电脑卖完了");
-			super.wait();
+			this.wait();
 			//super.wait();
 		}
 		//System.out.println(this.list.get(list.size() - 1));
 		Thread.sleep(100);
-		super.notifyAll();
+		this.notify();
 	}
 }
 
