@@ -38,11 +38,19 @@
 			<artifactId>amqp-client</artifactId>
 			<version>5.6.0</version>
 		</dependency>
-		
+
+		<!-- Netty开始 -->
+		<!-- https://mvnrepository.com/artifact/io.netty/netty-all -->
 		<dependency>
-    <groupId>org.slf4j</groupId>
-    <artifactId>slf4j-api</artifactId>
-    <version>1.7.25</version>
-</dependency>
+			<groupId>io.netty</groupId>
+			<artifactId>netty-all</artifactId>
+			<version>4.1.6.Final</version>
+		</dependency>
+		<!-- Netty结束 -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.25</version>
+		</dependency>
 	</dependencies>
 </project>
