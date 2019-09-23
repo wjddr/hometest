@@ -1,5 +1,9 @@
 package test;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+
 interface IFood {
 	public void eat();
 }
@@ -52,9 +56,34 @@ class Zuofan implements IFood{
 	}
 }
 
+class DouPorxy implements InvocationHandler{
+	private Object target;
+	public Object bind(Object target){
+		this.target = target;
+		return Proxy.newProxyInstance(target.getClass().getClassLoader(), target.getClass().getInterfaces(),
+				this); 
+	}
+	
+	private void maicai() {
+		System.out.println("動態买菜了");
+	}
+	
+	private void shoushi() {
+		System.out.println("動態收拾干净了");
+	}
+	
+	@Override
+	public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+		maicai();
+		method.invoke(this.target, args);
+		shoushi();
+		return null;
+	}
+}
+
 public class Factry {	
 	public static void main(String[] args) {
-		IFood food = new Zuofan(Chisha.getInstance("Meat"));
+		IFood food = (IFood)new DouPorxy().bind(new Meat());
 		food.eat();
 	}
 }
